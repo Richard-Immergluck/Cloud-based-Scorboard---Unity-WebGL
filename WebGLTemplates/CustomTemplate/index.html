@@ -1,0 +1,108 @@
+<!--
+  Unity WebGL Game with Firebase Integration
+
+  This HTML file sets up the environment to run a Unity WebGL build with integrated Firebase Realtime Database functionality.
+  It initializes Firebase, loads the Unity game, and ensures that necessary configurations are in place for Firebase operations.
+
+  Key functionalities provided by this file include:
+  - Initialising Firebase with specific configuration settings.
+  - Ensuring compatibility with Firebase SDK version 8.10.0 to avoid issues seen in higher versions.
+  - Loading the Unity WebGL build from specified paths.
+  
+  Note:
+  - It is crucial to use Firebase SDK version 8.10.0 due to compatibility issues with higher versions.
+  - Build paths are critical and should be based on the current location of the build folder being inside a 'public' folder.
+  - The expected output files from the build process are currently not compressed.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unity WebGL Game</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+      #unity-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+    </style>
+    <!-- Include Firebase Scripts -->
+    <!-- Important: Use Firebase SDK version 8.10.0 to ensure compatibility -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  </head>
+  <body>
+    <canvas id="unity-canvas"></canvas>
+    <script>
+      // Firebase configuration settings
+      const firebaseConfig = {
+        apiKey: "AIzaSyB5tbnShumXCJF9mM6GYFVH_IEXEa6bpCM",
+        authDomain: "blackout-leaderboard.firebaseapp.com",
+        databaseURL:
+          "https://blackout-leaderboard-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "blackout-leaderboard",
+        storageBucket: "blackout-leaderboard.appspot.com",
+        messagingSenderId: "1055904551792",
+        appId: "1:1055904551792:web:38ca69ee62f04a1757b5b5",
+      };
+
+      // Function to initialise Firebase
+      function initializeFirebase() {
+        try {
+          const app = firebase.initializeApp(firebaseConfig);
+          const database = firebase.database();
+          window.database = database;
+          window.firebaseReady = true;
+          document.dispatchEvent(new Event("FirebaseIsReady"));
+        } catch (error) {
+          console.error("Error initialising Firebase:", error);
+        }
+      }
+
+      // Event listener to initialise Firebase when the window loads
+      window.addEventListener("load", () => {
+        initializeFirebase();
+      });
+
+      // Event listener to load Unity when Firebase is ready
+      document.addEventListener("FirebaseIsReady", () => {
+        loadUnity();
+      });
+
+      // Function to load the Unity WebGL build
+      function loadUnity() {
+        const unityScript = document.createElement("script");
+        unityScript.src = "Build/public.loader.js"; // Adjust path if necessary
+        unityScript.onload = () => {
+          createUnityInstance(document.querySelector("#unity-canvas"), {
+            dataUrl: "Build/public.data", // Adjust path if necessary
+            frameworkUrl: "Build/public.framework.js", // Adjust path if necessary
+            codeUrl: "Build/public.wasm", // Adjust path if necessary
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "DefaultCompany",
+            productName: "Blackout-Game",
+            productVersion: "1.0",
+          })
+            .then((unityInstance) => {
+              window.unityInstance = unityInstance; // Set the global Unity instance here
+            })
+            .catch((error) => {
+              console.error("Error loading Unity:", error);
+            });
+        };
+        unityScript.onerror = (error) => {
+          console.error("Error loading Unity script:", error);
+        };
+        document.head.appendChild(unityScript);
+      }
+    </script>
+  </body>
+</html>

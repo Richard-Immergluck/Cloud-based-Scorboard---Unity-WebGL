@@ -1,0 +1,9 @@
+{
+  "apiKey": "AIzaSyB5tbnShumXCJF9mM6GYFVH_IEXEa6bpCM",
+  "authDomain": "blackout-leaderboard.firebaseapp.com",
+  "databaseURL": "https://blackout-leaderboard-default-rtdb.europe-west1.firebasedatabase.app",
+  "projectId": "blackout-leaderboard",
+  "storageBucket": "blackout-leaderboard.appspot.com",
+  "messagingSenderId": "1055904551792",
+  "appId": "1:1055904551792:web:38ca69ee62f04a1757b5b5"
+}
